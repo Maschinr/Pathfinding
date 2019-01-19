@@ -26,8 +26,8 @@ Pathfinder& Pathfinder::getInstance()
 }
 
 stack<shared_ptr<Tile> > Pathfinder::getPath(const Position& startPos, const Position& targetPos) {
-    std::vector<shared_ptr<NavTile> > opened;
-    std::vector<shared_ptr<NavTile> > closed;
+    vector<shared_ptr<NavTile> > opened;
+    vector<shared_ptr<NavTile> > closed;
 
 	shared_ptr<NavTile> start = this->nav_map[startPos.x][startPos.y];
 	shared_ptr<NavTile> target = this->nav_map[targetPos.x][targetPos.y];
@@ -47,11 +47,11 @@ stack<shared_ptr<Tile> > Pathfinder::getPath(const Position& startPos, const Pos
     bool found = false;
 	shared_ptr<NavTile> best;
     while(found == false) {
-        auto min = std::min_element(opened.begin(), opened.end(),
+        auto min = min_element(opened.begin(), opened.end(),
                                     [](const shared_ptr<NavTile>& a, const shared_ptr<NavTile>& b) {
                                         return (a->cost + a->distance) < (b->cost + b->distance);
                                     });
-        size_t index = distance(std::begin(opened), min);
+        size_t index = distance(begin(opened), min);
         best = opened[index];
         opened.erase(opened.begin() + index);
         closed.push_back(best);
@@ -63,7 +63,7 @@ stack<shared_ptr<Tile> > Pathfinder::getPath(const Position& startPos, const Pos
         } else {
             for (shared_ptr<NavTile> t : adj) {
                 if (find(closed.begin(), closed.end(), t) == closed.end()) { // its not in the closed list
-                    if (std::find(opened.begin(), opened.end(), t) == opened.end()) {
+                    if (find(opened.begin(), opened.end(), t) == opened.end()) {
                         t->cost = this->getDistance(start, t);
                         t->distance = this->getDistance(t, target);
                         t->parent = best;
@@ -101,7 +101,7 @@ stack<shared_ptr<Tile> > Pathfinder::getPath(const Position& startPos, const Pos
 
         return path;
     } else {
-        return std::stack<shared_ptr<Tile> >();
+        return stack<shared_ptr<Tile> >();
     }
 
 
